@@ -17,6 +17,9 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	JComboBox<String> selector;
 	JPanel panel_North;
 	JPanel panel_Checkbox;
+	JPanel panel_Date;
+	JTextField text_Month, text_Date;
+	JLabel label_Month, label_Date;
 	String[] list_Researcher = {
 			"Sukegawa",
 			"Matsumoto",
@@ -123,9 +126,17 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		for(int i = 0; i<list_Researcher.length; i++){
 			researcher[i] = new JCheckBox(list_Researcher[i]);
 		}
+		text_Month = new JTextField();
+		text_Date = new JTextField();
+		text_Month.setPreferredSize(new Dimension(50, 25));
+		text_Date.setPreferredSize(new Dimension(50, 25));
+		label_Month = new JLabel("Month");
+		label_Date = new JLabel("Day");
 		//レイアウト関連の処理
+		panel_Date = new JPanel(); //日付入力用パネル
 		panel_North = new JPanel(); //チェックボックス、テーブルを含むパネル
 		panel_Checkbox = new JPanel();
+		panel_Date.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panel_North.setLayout(new BorderLayout());
 		panel_Checkbox.setPreferredSize(new Dimension(600, 70));
 		panel_Checkbox.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -133,8 +144,13 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 			panel_Checkbox.add(researcher[i]);
 		}
 		setLayout(new BorderLayout());
-		panel_North.add(panel_Checkbox, BorderLayout.NORTH);
-		panel_North.add(scroll_t, BorderLayout.CENTER);
+		panel_Date.add(label_Month);
+		panel_Date.add(text_Month);
+		panel_Date.add(label_Date);
+		panel_Date.add(text_Date);
+		panel_North.add(panel_Date, BorderLayout.NORTH);
+		panel_North.add(panel_Checkbox, BorderLayout.CENTER);
+		panel_North.add(scroll_t, BorderLayout.SOUTH);
 		add(panel_North, BorderLayout.NORTH);
 		//add(scroll_t, BorderLayout.NORTH);
 		add(generate, BorderLayout.CENTER);
@@ -158,6 +174,31 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	public void ConvertToHTML(){ //Convert JTable into HTML format
 		TableColumn col;
 		String out = "";
+		
+		//日付
+		out += "<a name=\"";
+		try{
+			if(Integer.parseInt(text_Month.getText().toString()) <= 9){
+				out += "0";
+			}
+		}catch(NumberFormatException e){
+			JOptionPane.showMessageDialog(this, "日付の値が不正です");
+			return;
+		}
+		out += text_Month.getText().toString();
+		try{
+			if(Integer.parseInt(text_Date.getText().toString()) <= 9){
+				out += "0";
+			}
+		}catch(NumberFormatException e){
+			JOptionPane.showMessageDialog(this, "日付の値が不正です");
+			return;
+		}
+		out += text_Date.getText().toString();
+		out += "\" class = \"kyoto-jump\"></a>\n";
+		out += "<h3>";
+		out += text_Month.getText().toString() + "/" + text_Date.getText().toString();
+		out += "</h3>\n";
 		
 		//実験名
 		out += "<h4>";
@@ -278,7 +319,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 			panel_North.remove(scroll_t);
 			//repaint();
 			createTable();
-			panel_North.add(scroll_t, BorderLayout.CENTER);
+			panel_North.add(scroll_t, BorderLayout.SOUTH);
 			revalidate();
 			//テーブルを更新するためには＞http://oshiete.goo.ne.jp/qa/4543611.html
 		}
