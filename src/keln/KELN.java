@@ -64,15 +64,15 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	String[] list_Transformation = {
 			"Sample Name",
 			"Sample Volume",
-			"Competent Cells/(ƒÊl)",
+			"Competent Cells/(Î¼l)",
 			"Medium"
 	};
 	String[] list_ColonyPCR_1 = {
-			"Name‡T" //ŠÂ‹«ˆË‘¶•¶š
+			"Nameâ… " //ç’°å¢ƒä¾å­˜æ–‡å­—
 	};
 	String[] list_ColonyPCR_2 = {
-			"Name‡T", //ŠÂ‹«ˆË‘¶•¶š
-			"Name‡U"
+			"Nameâ… ", //ç’°å¢ƒä¾å­˜æ–‡å­—
+			"Nameâ…¡"
 	};
 	String[] list_LiquidCulture = {
 			"Name",
@@ -80,21 +80,21 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	};
 	String[] list_Miniprep = {
 			"DNA",
-			"Concentration/(ƒÊg/ml)",
+			"Concentration/(Î¼g/ml)",
 			"260/280", 
 			"260/230"
 	};
 	String[] list_RestrictionEnzymeDigestion = {
 			"Sample",
-			"DNA/(ƒÊl)",
-			"EcoR1/(ƒÊl)",
-			"Xba1/(ƒÊl)",
-			"Spe1/(ƒÊl)",
-			"Pst1/(ƒÊl)",
-			"Buffer/(ƒÊl)",
-			"BSA/(ƒÊl)",
-			"MilliQ/(ƒÊl)",
-			"Total/(ƒÊl)"
+			"DNA/(Î¼l)",
+			"EcoR1/(Î¼l)",
+			"Xba1/(Î¼l)",
+			"Spe1/(Î¼l)",
+			"Pst1/(Î¼l)",
+			"Buffer/(Î¼l)",
+			"BSA/(Î¼l)",
+			"MilliQ/(Î¼l)",
+			"Total/(Î¼l)"
 	};
 	String[] list_Electrophoresis = {
 			"Lane",
@@ -103,7 +103,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	String[] list_GelExtraction = {
 			"Lane",
 			"Restriction Enzyme Digestion Product",
-			"Volume/(ƒÊl)"
+			"Volume/(Î¼l)"
 	};
 	
 	DefaultTableModel tablemodel;
@@ -112,13 +112,13 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	int Row_Max = 20;
 	
 	public KELN(){ //Constructor
-		list_Current = list_PCR_Target; //ÀŒ±‚Ìí—Ş
-		Col_Max = list_Current.length; //—ñ‚ÌÅ‘å”‚ğÀŒ±‚Ìí—Ş‚Ì—v‘f”‚Å‰Šú‰»
+		list_Current = list_PCR_Target; //å®Ÿé¨“ã®ç¨®é¡
+		Col_Max = list_Current.length; //åˆ—ã®æœ€å¤§æ•°ã‚’å®Ÿé¨“ã®ç¨®é¡ã®è¦ç´ æ•°ã§åˆæœŸåŒ–
 		createTable();
 		output = new JTextArea();
 		output.setRows(10);
 		scroll_o = new JScrollPane(output);
-		generate = new JButton("•ÏŠ·");
+		generate = new JButton("å¤‰æ›");
 		generate.addActionListener(this);
 		selector = new JComboBox<String>(list_Experiment);
 		selector.addItemListener(this);
@@ -132,9 +132,9 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		text_Date.setPreferredSize(new Dimension(50, 25));
 		label_Month = new JLabel("Month");
 		label_Date = new JLabel("Day");
-		//ƒŒƒCƒAƒEƒgŠÖ˜A‚Ìˆ—
-		panel_Date = new JPanel(); //“ú•t“ü—Í—pƒpƒlƒ‹
-		panel_North = new JPanel(); //ƒ`ƒFƒbƒNƒ{ƒbƒNƒXAƒe[ƒuƒ‹‚ğŠÜ‚Şƒpƒlƒ‹
+		//ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆé–¢é€£ã®å‡¦ç†
+		panel_Date = new JPanel(); //æ—¥ä»˜å…¥åŠ›ç”¨ãƒ‘ãƒãƒ«
+		panel_North = new JPanel(); //ãƒã‚§ãƒƒã‚¯ãƒœãƒƒã‚¯ã‚¹ã€ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å«ã‚€ãƒ‘ãƒãƒ«
 		panel_Checkbox = new JPanel();
 		panel_Date.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panel_North.setLayout(new BorderLayout());
@@ -161,8 +161,8 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		Col_Max = list_Current.length;
 		tablemodel = new DefaultTableModel(list_Current, Row_Max);
 		table = new JTable(tablemodel);
-		table.setColumnSelectionAllowed(true); //1ƒZƒ‹‚²‚Æ‚É‘I‘ğ‚Å‚«‚é‚æ‚¤‚É‚·‚é
-		table.setGridColor(Color.decode("#4682B4")); //Œrü‚ÉF‚ğİ’è
+		table.setColumnSelectionAllowed(true); //1ã‚»ãƒ«ã”ã¨ã«é¸æŠã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
+		table.setGridColor(Color.decode("#4682B4")); //ç½«ç·šã«è‰²ã‚’è¨­å®š
 		colmodel = (DefaultTableColumnModel)table.getColumnModel();
 		scroll_t = new JScrollPane(table);
 		TableColumn col;
@@ -176,14 +176,14 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		TableColumn col;
 		String out = "";
 		
-		//“ú•t
+		//æ—¥ä»˜
 		out += "<a name=\"";
 		try{
 			if(Integer.parseInt(text_Month.getText().toString()) <= 9){
 				out += "0";
 			}
 		}catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(this, "“ú•t‚Ì’l‚ª•s³‚Å‚·");
+			JOptionPane.showMessageDialog(this, "æ—¥ä»˜ã®å€¤ãŒä¸æ­£ã§ã™");
 			return;
 		}
 		out += text_Month.getText().toString();
@@ -192,7 +192,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 				out += "0";
 			}
 		}catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(this, "“ú•t‚Ì’l‚ª•s³‚Å‚·");
+			JOptionPane.showMessageDialog(this, "æ—¥ä»˜ã®å€¤ãŒä¸æ­£ã§ã™");
 			return;
 		}
 		out += text_Date.getText().toString();
@@ -201,15 +201,15 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		out += text_Month.getText().toString() + "/" + text_Date.getText().toString();
 		out += "</h3>\n";
 		
-		//ÀŒ±–¼
+		//å®Ÿé¨“å
 		out += "<h4>";
 		out += selector.getSelectedItem().toString();
 		out += "</h4>\n";
 		
-		//ÀŒ±Ò–¼
+		//å®Ÿé¨“è€…å
 		out += "<span>";
 		
-		int finalindex = 0; //ÅŒã‚ÌÀŒ±Ò‚ğ•\‚·”Ô†
+		int finalindex = 0; //æœ€å¾Œã®å®Ÿé¨“è€…ã‚’è¡¨ã™ç•ªå·
 		for(int i=0; i<list_Researcher.length; i++){
 			if(researcher[i].isSelected() == true){
 				finalindex = i;
@@ -219,17 +219,17 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 			if(researcher[i].isSelected() == true){
 				out += researcher[i].getText();
 				if(i != finalindex){
-					out += ", "; //ÅŒã‚ÌÀŒ±Ò‚É‚ÍƒJƒ“ƒ}‚ğ‚Â‚¯‚È‚¢
+					out += ", "; //æœ€å¾Œã®å®Ÿé¨“è€…ã«ã¯ã‚«ãƒ³ãƒã‚’ã¤ã‘ãªã„
 				}
 			}
 		}
 		out += "</span>\n";
 		
-		//•\
+		//è¡¨
 		out += "<table>\n";
 		out += "<tr>";
 		
-		//Œ©o‚µ‚ğ‚Â‚¯‚é
+		//è¦‹å‡ºã—ã‚’ã¤ã‘ã‚‹
 		for(int i=0; i<Col_Max; i++){
 			out += "<th>";
 			col = colmodel.getColumn(i);
@@ -238,9 +238,9 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		}
 		out += "</tr>\n";
 		
-		//•\‚ğƒf[ƒ^‚Å–„‚ß‚é
+		//è¡¨ã‚’ãƒ‡ãƒ¼ã‚¿ã§åŸ‹ã‚ã‚‹
 		for(int i=0; i<Row_Max; i++){
-			//1—ñŠÛ‚²‚Æ‹ó”’‚È‚ç‚»‚±‚Å~‚ß‚é
+			//1åˆ—ä¸¸ã”ã¨ç©ºç™½ãªã‚‰ãã“ã§æ­¢ã‚ã‚‹
 			int emptyCount = 0;
 			for(int j=0; j<Col_Max; j++){
 				if(tablemodel.getValueAt(i, j) == null) emptyCount++ ;
@@ -322,7 +322,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 			createTable();
 			panel_North.add(scroll_t, BorderLayout.SOUTH);
 			revalidate();
-			//ƒe[ƒuƒ‹‚ğXV‚·‚é‚½‚ß‚É‚Í„http://oshiete.goo.ne.jp/qa/4543611.html
+			//ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’æ›´æ–°ã™ã‚‹ãŸã‚ã«ã¯ï¼http://oshiete.goo.ne.jp/qa/4543611.html
 		}
 	}
 }
