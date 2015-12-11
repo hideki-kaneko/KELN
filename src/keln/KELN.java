@@ -152,7 +152,6 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		panel_North.add(panel_Checkbox, BorderLayout.CENTER);
 		panel_North.add(scroll_t, BorderLayout.SOUTH);
 		add(panel_North, BorderLayout.NORTH);
-		//add(scroll_t, BorderLayout.NORTH);
 		add(generate, BorderLayout.CENTER);
 		add(scroll_o, BorderLayout.SOUTH);
 		add(selector, BorderLayout.WEST);
@@ -162,6 +161,8 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		Col_Max = list_Current.length;
 		tablemodel = new DefaultTableModel(list_Current, Row_Max);
 		table = new JTable(tablemodel);
+		table.setColumnSelectionAllowed(true); //1ƒZƒ‹‚²‚Æ‚É‘I‘ğ‚Å‚«‚é‚æ‚¤‚É‚·‚é
+		table.setGridColor(Color.decode("#4682B4")); //Œrü‚ÉF‚ğİ’è
 		colmodel = (DefaultTableColumnModel)table.getColumnModel();
 		scroll_t = new JScrollPane(table);
 		TableColumn col;
