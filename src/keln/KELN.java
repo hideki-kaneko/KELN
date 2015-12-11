@@ -138,8 +138,8 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		panel_Checkbox = new JPanel();
 		panel_Date.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panel_North.setLayout(new BorderLayout());
-		panel_Checkbox.setPreferredSize(new Dimension(600, 70));
-		panel_Checkbox.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		panel_Checkbox.setPreferredSize(new Dimension(600, 70));
+		panel_Checkbox.setLayout(new GridLayout((int)list_Researcher.length / 7 + 1 , 7));
 		for(int i = 0; i<list_Researcher.length; i++){
 			panel_Checkbox.add(researcher[i]);
 		}
