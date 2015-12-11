@@ -172,6 +172,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		table.setGridColor(Color.decode("#4682B4")); //罫線に色を設定
 		colmodel = (DefaultTableColumnModel)table.getColumnModel();
 		scroll_t = new JScrollPane(table);
+		scroll_t.setPreferredSize(table.getPreferredSize());
 		TableColumn col;
 		for(int i=0; i< Col_Max; i++){
 			col = colmodel.getColumn(i);
