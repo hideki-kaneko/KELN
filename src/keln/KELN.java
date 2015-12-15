@@ -7,14 +7,14 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-public class KELN extends JPanel implements ActionListener, ItemListener{
+public class KELN extends JPanel implements ActionListener, ItemListener, KeyListener{
 	//variables
 	final String KELN_VERSION = "1.0";
 	
 	JTable table;
 	JScrollPane scroll_t, scroll_o;
 	JTextArea output;
-	JButton generate;
+	JButton generate, destroy;
 	JCheckBox[] researcher;
 	JComboBox<String> selector;
 	JComboBox<String> author;
@@ -121,8 +121,10 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		output = new JTextArea();
 		output.setRows(10);
 		scroll_o = new JScrollPane(output);
-		generate = new JButton("変換");
+		generate = new JButton("Convert");
 		generate.addActionListener(this);
+		destroy = new JButton("Clear");
+		destroy.addActionListener(this);
 		selector = new JComboBox<String>(list_Experiment);
 		selector.addItemListener(this);
 		author = new JComboBox<String>(list_Researcher);
@@ -155,6 +157,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		panel_Date.add(text_Date);
 		panel_Date.add(label_Author);
 		panel_Date.add(author);
+		panel_Date.add(destroy);
 		panel_North.add(panel_Date, BorderLayout.NORTH);
 		panel_North.add(panel_Checkbox, BorderLayout.CENTER);
 		panel_North.add(scroll_t, BorderLayout.SOUTH);
@@ -168,6 +171,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		Col_Max = list_Current.length;
 		tablemodel = new DefaultTableModel(list_Current, Row_Max);
 		table = new JTable(tablemodel);
+		table.addKeyListener(this);
 		table.setColumnSelectionAllowed(true); //1セルごとに選択できるようにする
 		table.setGridColor(Color.decode("#4682B4")); //罫線に色を設定
 		colmodel = (DefaultTableColumnModel)table.getColumnModel();
@@ -177,6 +181,20 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		for(int i=0; i< Col_Max; i++){
 			col = colmodel.getColumn(i);
 			col.setHeaderValue(list_Current[i]);
+		}
+	}
+	
+	public void ResetTable(){
+		panel_North.remove(scroll_t);
+		createTable();
+		panel_North.add(scroll_t, BorderLayout.SOUTH);
+		revalidate();
+		//テーブルを更新するためには＞http://oshiete.goo.ne.jp/qa/4543611.html
+	}
+	
+	public void ResetCheckbox(){
+		for(int i=0; i<list_Researcher.length; i++){
+			researcher[i].setSelected(false);
 		}
 	}
 	
@@ -195,7 +213,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 				out += "0";
 			}
 		}catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(this, "日付の値が不正です");
+			JOptionPane.showMessageDialog(this, "Date is invalid or empty.");
 			return;
 		}
 		out += text_Month.getText().toString();
@@ -204,7 +222,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 				out += "0";
 			}
 		}catch(NumberFormatException e){
-			JOptionPane.showMessageDialog(this, "日付の値が不正です");
+			JOptionPane.showMessageDialog(this, "Date is invalid or empty.");
 			return;
 		}
 		out += text_Date.getText().toString();
@@ -254,13 +272,14 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 		for(int i=0; i<Row_Max; i++){
 			//1列丸ごと空白ならそこで止める
 			int emptyCount = 0;
-			for(int j=0; j<Col_Max; j++){
-				if(tablemodel.getValueAt(i, j) == null) emptyCount++ ;
+			for(int j=0; j<table.getColumnCount(); j++){
+				if(tablemodel.getValueAt(i, j) == null || tablemodel.getValueAt(i, j).equals("")) emptyCount++ ;
+				//文字列の比較は.equalsでないとダメ!
 			}
-			if(emptyCount >= Col_Max) break;
+			if(emptyCount >= table.getColumnCount()) break;
 			
 			out += "<tr>";
-			for(int j=0; j<Col_Max; j++){
+			for(int j=0; j<table.getColumnCount(); j++){
 				out += "<td>";
 				try{
 					out += tablemodel.getValueAt(i, j).toString();
@@ -290,6 +309,11 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == generate){
 			ConvertToHTML();
+		}
+		if(e.getSource() == destroy){
+			ResetTable();
+			ResetCheckbox();
+			output.setText("");
 		}
 	}
 
@@ -330,12 +354,27 @@ public class KELN extends JPanel implements ActionListener, ItemListener{
 			default:
 				break;
 			}
-			panel_North.remove(scroll_t);
-			//repaint();
-			createTable();
-			panel_North.add(scroll_t, BorderLayout.SOUTH);
-			revalidate();
-			//テーブルを更新するためには＞http://oshiete.goo.ne.jp/qa/4543611.html
+			ResetTable();
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getSource() == table){
+			if(e.getKeyCode() == KeyEvent.VK_DELETE){
+				table.setValueAt(null, table.getSelectedRow(), table.getSelectedColumn());
+				revalidate();
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
 	}
 }
