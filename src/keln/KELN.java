@@ -16,6 +16,7 @@ import javax.swing.table.TableColumn;
 public class KELN extends JPanel implements ActionListener, ItemListener, KeyListener{
 	//variables
 	final String KELN_VERSION = "1.0";
+	String Platform;
 	
 	JTable table;
 	JScrollPane scroll_t, scroll_o;
@@ -122,6 +123,8 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 	int Row_Max = 20;
 	
 	public KELN(){ //Constructor
+		Platform = getPlatformName();
+		
 		list_Current = list_PCR_Target; //実験の種類
 		Col_Max = list_Current.length; //列の最大数を実験の種類の要素数で初期化
 		createTable();
@@ -312,8 +315,15 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		Date time = new Date();
 		SimpleDateFormat ftime = new SimpleDateFormat("MM_dd_hh_mm_ss");
 		String filename = text_Month.getText() + "_" + text_Date.getText() +  "_" + selector.getSelectedItem().toString() + "_" + author.getSelectedItem().toString() + "_" + ftime.format(time) + ".txt";
-		String parentdir = System.getProperty("user.dir") + "\\KELN";
-		String fullpath = parentdir + "\\" + filename;
+		String parentdir = System.getProperty("user.dir");
+		String fullpath = "";
+		if(Platform.equals("linux") || Platform.equals("mac")){
+			parentdir += "/KELN";
+			fullpath = parentdir + "/" + filename;
+		} else if(Platform.equals("windows")){
+			parentdir += "\\KELN";
+			fullpath = parentdir + "\\" + filename;
+		}
 		File dir = new File(parentdir);
 		if(!dir.exists()){
 			dir.mkdir();
@@ -325,6 +335,14 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String getPlatformName(){
+		String name = System.getProperty("os.name").toLowerCase();
+		if(name.startsWith("linux")) return "linux";
+		else if (name.startsWith("mac")) return "mac";
+		else if (name.startsWith("windows")) return "windows";
+		else return "unknown";
 	}
 	
 	public static void main(String[] args){
