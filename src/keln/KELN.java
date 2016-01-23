@@ -1,39 +1,22 @@
 package keln;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
+import javax.swing.table.*;
 
 public class KELN extends JPanel implements ActionListener, ItemListener, KeyListener{
-	//variables
-	final String KELN_VERSION = "1.0";
-	String Platform;
+	/*
+	 * To modify this program for your team,
+	 * you have to replace each value of variables.
+	 * 
+	 */
 	
-	JTable table;
-	JScrollPane scroll_t, scroll_o;
-	JTextArea output;
-	JButton generate, destroy;
-	JCheckBox[] researcher;
-	JCheckBox isAllowedOutput;
-	JComboBox<String> selector;
-	JComboBox<String> author;
-	JPanel panel_North;
-	JPanel panel_Checkbox;
-	JPanel panel_Date;
-	JTextField text_Month, text_Date;
-	JLabel label_Month, label_Date, label_Author;
-	String[] list_Researcher = {
+	String[] list_Researcher = {	//Write team members here
 			"Sukegawa",
 			"Matsumoto",
 			"Li",
@@ -51,7 +34,8 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 			"Nakamura",
 			"Yamada"
 	};
-	String[] list_Experiment = {
+	
+	String[] list_Experiment = {	//Write experiments here
 			"PCR (Target)",
 			"PCR (Steps)",
 			"Transformation",
@@ -63,7 +47,9 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 			"Electrophoresis",
 			"Gel Extraction"
 	};
-	String[] list_Current;
+	
+	//Write elements of each experiment
+	//Note:you have to edit itemStateChanged() function after adding experiment.
 	String[] list_PCR_Target = {
 			"Target",
 			"Volume"
@@ -81,11 +67,11 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 			"Medium"
 	};
 	String[] list_ColonyPCR_1 = {
-			"NameⅠ" //環境依存文字
+			"Name I"
 	};
 	String[] list_ColonyPCR_2 = {
-			"NameⅠ", //環境依存文字
-			"NameⅡ"
+			"Name I",
+			"Name II"
 	};
 	String[] list_LiquidCulture = {
 			"Name",
@@ -118,17 +104,32 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 			"Restriction Enzyme Digestion Product",
 			"Volume/(μl)"
 	};
+
+	//variables
+	int Col_Max; //Maximum number of the column will be initialized in constructor.
+	final int ROW_MAX = 20; //Maximum number of the row
+	String platform; //OS version
+	String[] list_Current; //This array stores list_[experiment name]
+	
+	//GUI
+	JTable table;
+	JScrollPane scroll_t, scroll_o;
+	JTextArea output;
+	JButton generate, destroy;
+	JCheckBox[] researcher;
+	JCheckBox isAllowedOutput;
+	JComboBox<String> selector, author;
+	JPanel panel_North, panel_Checkbox, panel_Date;
+	JTextField text_Month, text_Date;
+	JLabel label_Month, label_Date, label_Author;
 	
 	DefaultTableModel tablemodel;
 	DefaultTableColumnModel colmodel;
-	int Col_Max = 4;
-	int Row_Max = 20;
 	
 	public KELN(){ //Constructor
-		Platform = getPlatformName();
-		
-		list_Current = list_PCR_Target; //実験の種類
-		Col_Max = list_Current.length; //列の最大数を実験の種類の要素数で初期化
+		platform = getPlatformName();
+		list_Current = list_PCR_Target;
+		Col_Max = list_Current.length;
 		createTable();
 		output = new JTextArea();
 		output.setRows(10);
@@ -152,13 +153,12 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		label_Month = new JLabel("Month");
 		label_Date = new JLabel("Day");
 		label_Author = new JLabel("Author");
-		//レイアウト関連の処理
-		panel_Date = new JPanel(); //日付入力用パネル
-		panel_North = new JPanel(); //チェックボックス、テーブルを含むパネル
+		//Layout
+		panel_Date = new JPanel();
+		panel_North = new JPanel();
 		panel_Checkbox = new JPanel();
 		panel_Date.setLayout(new FlowLayout(FlowLayout.LEFT));
 		panel_North.setLayout(new BorderLayout());
-//		panel_Checkbox.setPreferredSize(new Dimension(600, 70));
 		panel_Checkbox.setLayout(new GridLayout((int)list_Researcher.length / 7 + 1 , 7));
 		for(int i = 0; i<list_Researcher.length; i++){
 			panel_Checkbox.add(researcher[i]);
@@ -183,11 +183,11 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 	
 	public void createTable(){
 		Col_Max = list_Current.length;
-		tablemodel = new DefaultTableModel(list_Current, Row_Max);
+		tablemodel = new DefaultTableModel(list_Current, ROW_MAX);
 		table = new JTable(tablemodel);
 		table.addKeyListener(this);
-		table.setColumnSelectionAllowed(true); //1セルごとに選択できるようにする
-		table.setGridColor(Color.decode("#4682B4")); //罫線に色を設定
+		table.setColumnSelectionAllowed(true); //User is allowed to select a single cell
+		table.setGridColor(Color.decode("#4682B4"));
 		colmodel = (DefaultTableColumnModel)table.getColumnModel();
 		scroll_t = new JScrollPane(table);
 		scroll_t.setPreferredSize(table.getPreferredSize());
@@ -198,29 +198,28 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		}
 	}
 	
-	public void ResetTable(){
+	public void resetTable(){
 		panel_North.remove(scroll_t);
 		createTable();
 		panel_North.add(scroll_t, BorderLayout.SOUTH);
 		revalidate();
-		//テーブルを更新するためには＞http://oshiete.goo.ne.jp/qa/4543611.html
 	}
 	
-	public void ResetCheckbox(){
+	public void resetCheckbox(){
 		for(int i=0; i<list_Researcher.length; i++){
 			researcher[i].setSelected(false);
 		}
 	}
 	
-	public void ConvertToHTML(){ //Convert JTable into HTML format
+	public void convertStringToHTML(){ //Convert JTable into HTML format
 		TableColumn col;
 		String out = "";
 		
-		//バージョンと執筆者をコメントとして埋め込む
-		out += "<!-- Table Generated by KELN ver." + KELN_VERSION + " ";
+		//Author
+		out += "<!-- Table Generated by KELN" + " ";
 		out += "Author: " + author.getSelectedItem().toString();
 		out += " -->\r\n<div class=\"keln_container\">\r\n";
-		//日付
+		//Date
 		out += "<a name=\"";
 		try{
 			if(Integer.parseInt(text_Month.getText().toString()) <= 9){
@@ -245,15 +244,15 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		out += text_Month.getText().toString() + "/" + text_Date.getText().toString();
 		out += "</h3></span>\r\n";
 		
-		//実験名
+		//Experiment name
 		out += "<span class=\"keln_exp\"><h4>";
 		out += selector.getSelectedItem().toString();
 		out += "</h4></span>\r\n";
 		
-		//実験者名
+		//Experimenter name
 		out += "<span class=\"keln_researcher\">";
 		
-		int finalindex = 0; //最後の実験者を表す番号
+		int finalindex = 0; //final experimenter
 		for(int i=0; i<list_Researcher.length; i++){
 			if(researcher[i].isSelected() == true){
 				finalindex = i;
@@ -263,17 +262,17 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 			if(researcher[i].isSelected() == true){
 				out += researcher[i].getText();
 				if(i != finalindex){
-					out += ", "; //最後の実験者にはカンマをつけない
+					out += ", "; //Do not add comma after the last name
 				}
 			}
 		}
 		out += "</span>\r\n";
 		
-		//表
+		//Table start
 		out += "<table class=\"keln_table\">\r\n";
 		out += "<tr>";
 		
-		//見出しをつける
+		//Add header
 		for(int i=0; i<Col_Max; i++){
 			out += "<th>";
 			col = colmodel.getColumn(i);
@@ -282,13 +281,12 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		}
 		out += "</tr>\r\n";
 		
-		//表をデータで埋める
-		for(int i=0; i<Row_Max; i++){
-			//1列丸ごと空白ならそこで止める
+		//Fill the table with data
+		for(int i=0; i<ROW_MAX; i++){
+			//Stop after detecting an empty row
 			int emptyCount = 0;
 			for(int j=0; j<table.getColumnCount(); j++){
 				if(tablemodel.getValueAt(i, j) == null || tablemodel.getValueAt(i, j).equals("")) emptyCount++ ;
-				//文字列の比較は.equalsでないとダメ!
 			}
 			if(emptyCount >= table.getColumnCount()) break;
 			
@@ -307,23 +305,23 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		
 		out += "</table>\r\n</div>\r\n";
 		out += "<!------------ Table END ------------>";
-		out = ReplaceString(out, "μ", "&micro");
+		out = replaceString(out, "μ", "&micro");
 		output.setText(out);
 		if(isAllowedOutput.isSelected()){
-			SaveStringToText(out);
+			saveStringToText(out);
 		}
 	}
 	
-	public void SaveStringToText(String output){
+	public void saveStringToText(String output){
 		Date time = new Date();
 		SimpleDateFormat ftime = new SimpleDateFormat("MM_dd_hh_mm_ss");
 		String filename = text_Month.getText() + "_" + text_Date.getText() +  "_" + selector.getSelectedItem().toString() + "_" + author.getSelectedItem().toString() + "_" + ftime.format(time) + ".txt";
 		String parentdir = System.getProperty("user.dir");
 		String fullpath = "";
-		if(Platform.equals("linux") || Platform.equals("mac")){
+		if(platform.equals("linux") || platform.equals("mac")){
 			parentdir += "/KELN";
 			fullpath = parentdir + "/" + filename;
-		} else if(Platform.equals("windows")){
+		} else if(platform.equals("windows")){
 			parentdir += "\\KELN";
 			fullpath = parentdir + "\\" + filename;
 		}
@@ -348,7 +346,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 		else return "unknown";
 	}
 	
-	public String ReplaceString(String str, String match, String replace){
+	public String replaceString(String str, String match, String replace){
 		String regex = match;
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(str);
@@ -369,11 +367,11 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == generate){
-			ConvertToHTML();
+			convertStringToHTML();
 		}
 		if(e.getSource() == destroy){
-			ResetTable();
-			ResetCheckbox();
+			resetTable();
+			resetCheckbox();
 			output.setText("");
 		}
 	}
@@ -415,7 +413,7 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 			default:
 				break;
 			}
-			ResetTable();
+			resetTable();
 		}
 	}
 
