@@ -1,4 +1,4 @@
-package keln;
+package jp.gr.java_conf.keln;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
