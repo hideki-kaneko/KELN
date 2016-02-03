@@ -51,8 +51,13 @@ public class KELN extends JPanel implements ActionListener, ItemListener, KeyLis
 	//Write elements of each experiment
 	//Note:you have to edit itemStateChanged() function after adding experiment.
 	String[] list_PCR_Target = {
-			"Target",
-			"Volume"
+			"Templates/(μl)",
+			"Primer1/(μl)",
+			"Primer2/(μl)",
+			"Buffer/(μl)",
+			"MilliQ/(μl)",
+			"Any Other/(μl)",
+			"Total/(μl)"
 	};
 	String[] list_PCR_Steps = {
 			"Steps",
